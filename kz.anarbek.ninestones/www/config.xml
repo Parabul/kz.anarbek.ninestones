@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="kz.anarbek.NineStonesGame" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
-    <name>NineStonesGame</name>
+<widget id="kz.anarbek.game.NineStones" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
+    <name>Nine Stones</name>
     <description>
         NineStones Game Client
     </description>
