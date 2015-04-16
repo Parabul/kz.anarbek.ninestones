@@ -66,7 +66,7 @@ var app = {
 				top: (height-2-ballDiameter)
 			}, 2000);
 			
-		$('#ball').on('tap', function() {
+		$('#ball').on('click', function() {
 			$('#ball').animate({				
 				left: (2),
 				top: (2)
