@@ -16,34 +16,61 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+$.event.special.tap = {
+  setup: function() {
+    var self = this,
+      $self = $(self);
+
+    $self.on('touchstart', function(startEvent) {
+      var target = startEvent.target;
+
+      $self.one('touchend', function(endEvent) {
+        if (target == endEvent.target) {
+          $.event.simulate('tap', self, endEvent);
+        }
+      });
+    });
+  }
+};
+
+
 var app = {
     // Application Constructor
     initialize: function() {
-        this.bindEvents();
+        $(document).one('deviceready',function(){
+			app.main();
+		});
+		 $(document).one('ready',function(){
+			app.main();
+		});
     },
     // Bind Event Listeners
     //
     // Bind any events that are required on startup. Common events are:
     // 'load', 'deviceready', 'offline', and 'online'.
-    bindEvents: function() {
-        document.addEventListener('deviceready', this.onDeviceReady, false);
-    },
-    // deviceready Event Handler
-    //
-    // The scope of 'this' is the event. In order to call the 'receivedEvent'
-    // function, we must explicitly call 'app.receivedEvent(...);'
-    onDeviceReady: function() {
-        app.receivedEvent('deviceready');
-    },
-    // Update DOM on a Received Event
-    receivedEvent: function(id) {
-        var parentElement = document.getElementById(id);
-        var listeningElement = parentElement.querySelector('.listening');
-        var receivedElement = parentElement.querySelector('.received');
-
-        listeningElement.setAttribute('style', 'display:none;');
-        receivedElement.setAttribute('style', 'display:block;');
-
-        console.log('Received Event: ' + id);
-    }
+    main: function() {
+		console.log('device ready');
+		var width=$(window).width();
+		var height=$(window).height();
+		
+		$('#game-info').height(height/6);
+		$('#board').height(height);
+		$('#board').width(width);
+		ballDiameter=(width-10*3)/9/3;
+		$("#ball").height(ballDiameter);
+		$("#ball").width(ballDiameter);
+		$("#ball").css('border-radius',width);
+		
+		$('#ball').animate({				
+				left: (width-2-ballDiameter),
+				top: (height-2-ballDiameter)
+			}, 2000);
+			
+		$('#ball').on('tap', function() {
+			$('#ball').animate({				
+				left: (2),
+				top: (2)
+			}, 2000);
+		}); 
+    }   
 };
