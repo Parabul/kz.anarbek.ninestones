@@ -16,43 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-$.event.special.tap = {
-  setup: function() {
-    var self = this,
-      $self = $(self);
-
-    $self.on('touchstart', function(startEvent) {
-      var target = startEvent.target;
-
-      $self.one('touchend', function(endEvent) {
-        if (target == endEvent.target) {
-          $.event.simulate('tap', self, endEvent);
-        }
-      });
-    });
-  }
-};
-
-
-var app = {
-    // Application Constructor
-    initialize: function() {
-        $(document).one('deviceready',function(){
-			app.main();
-		});
-		 $(document).one('ready',function(){
-			app.main();
-		});
-    },
-    // Bind Event Listeners
-    //
-    // Bind any events that are required on startup. Common events are:
-    // 'load', 'deviceready', 'offline', and 'online'.
-    main: function() {
+function appReady(){
 		console.log('device ready');
 		var width=$(window).width();
 		var height=$(window).height();
-		
+		console.log({height:height,width:width});
 		$('#game-info').height(height/6);
 		$('#board').height(height);
 		$('#board').width(width);
@@ -72,5 +40,8 @@ var app = {
 				top: (2)
 			}, 2000);
 		}); 
-    }   
-};
+}
+document.addEventListener("deviceready", appReady, false);
+
+
+
