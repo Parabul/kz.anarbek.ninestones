@@ -29,19 +29,17 @@ function appReady(){
 		$("#ball").width(ballDiameter);
 		$("#ball").css('border-radius',width);
 		
-		$('#ball').animate({				
-				left: (width-2-ballDiameter),
-				top: (height-2-ballDiameter)
+		$('#ball').animate({
+				translate3d: (width-2-ballDiameter)+"px,"+(height-2-ballDiameter)+"px,0"
 			}, 2000);
 			
 		$('#ball').on('click', function() {
 			$('#ball').animate({				
-				left: (2),
-				top: (2)
+				translate3d: "2px,2px,0"
 			}, 2000);
 		}); 
 }
 document.addEventListener("deviceready", appReady, false);
 
-
+$(document).ready(appReady);
 
