@@ -44,11 +44,27 @@ body {
 #board td{
 	width:11%;
 	border:3px solid grey;
+	vertical-align:top;
 }
 
-#ball{
+.ball{
 	background-color:green;
-	position:absolute;
-	top:2px;
-	left:2px;
+	float:left;
 }
+table{
+	border:2px solid #1a556c;
+	width:800px;
+	height:600px;				
+	padding:0px;
+	background:#CEECF5;
+}
+td{
+	border:2px solid #1a556c;
+	
+}
+#game-info{
+	padding:5px;
+	vertical-align: middle !important;
+	background:#A9F5A9;
+}
+
