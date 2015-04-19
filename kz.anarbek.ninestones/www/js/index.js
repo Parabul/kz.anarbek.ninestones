@@ -85,7 +85,7 @@ function appReady(){
 		//	$(this).appendTo('#cell-1-3');
 		//}); 
 		waitingUserStep=true;
-		$('.cell').one('click', function() {
+		$('.cell').on('click', function() {
 			//if(!waitingUserStep)	return;
 			waitingUserStep=false;
 			var stepCell=$(this);
@@ -121,7 +121,11 @@ function appReady(){
 				}
 				currentCell=getNextCellObj(currentCell);
 			});
-			
+			setTimeout(function(){
+			$.blockUI({ message: 'Ждем ход соперника' }); 
+ 
+			setTimeout($.unblockUI, 2000); 
+			},300);
 		}); 
 		
 }
