@@ -17,9 +17,9 @@
  * under the License.
  */
  
-	var FIRST=1;
-	var SECOND=2;
- 
+var FIRST=1;
+var SECOND=2;
+var waitingUserStep=false;
 function initBalls(){
 	var cnt=1;
 	for(var player=1;player<3;player++){	
@@ -84,8 +84,10 @@ function appReady(){
 		//$('.ball').on('click', function() {
 		//	$(this).appendTo('#cell-1-3');
 		//}); 
-		
-		$('.cell').on('click', function() {
+		waitingUserStep=true;
+		$('.cell').one('click', function() {
+			//if(!waitingUserStep)	return;
+			waitingUserStep=false;
 			var stepCell=$(this);
 			var stepCellInfo=getCellInfo($(this));
 			
@@ -113,7 +115,7 @@ function appReady(){
 					var finalCellBalls=finalCell.children('.ball');
 					console.log(finalCellBalls.length);
 					if((finalCellBalls.length %2 == 0) && (stepCellInfo.player!=finalCellInfo.player)){	
-						finalCellBalls.hide();
+						finalCellBalls.appendTo($('#kazan-'+stepCellInfo.player));
 					}
 					
 				}
@@ -123,7 +125,7 @@ function appReady(){
 		}); 
 		
 }
-document.addEventListener("deviceready", appReady, false);
+//document.addEventListener("deviceready", appReady, false);
 
 $(document).ready(appReady);
 
