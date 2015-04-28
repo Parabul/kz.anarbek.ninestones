@@ -8,6 +8,7 @@
         NineStones Team
     </author>
     <content src="index.html" />
+	<access origin="game-ninestones.rhcloud.com" />
     <preference name="permissions" value="none" />
     <preference name="target-device" value="universal" />
     <preference name="fullscreen" value="true" />

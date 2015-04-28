@@ -20,6 +20,11 @@
 var FIRST=1;
 var SECOND=2;
 var waitingUserStep=false;
+var specialCell={
+	1:0,
+	2:0
+}
+var historySteps="";
 function initBalls(){
 	var cnt=1;
 	for(var player=1;player<3;player++){	
@@ -50,8 +55,39 @@ function getNextCellObj(obj){
 	return getNextCell(cell,player);
 }
 
-function moveBallToCell(ball, cell){
-	ball.appendTo(getCellByInfo(cell));
+function moveBallToCell(ball, cellInfo){
+	if(specialCell[cellInfo.player]==cellInfo.cell){
+		ball.fadeOut(1200,function(){	
+			ball.remove();
+		});
+	}
+	var oldX=ball.offset().left;
+	var oldY=ball.offset().top;
+	
+	ball.appendTo(getCellByInfo(cellInfo));
+	
+	var newX=ball.offset().left;
+	var newY=ball.offset().top;
+	
+	var x=oldX-newX;
+	var y=oldY-newY;
+	ball.animate({ translate3d: x+'px, '+y+'px, 0px'}, 0,'linear',function(){
+		ball.animate({ translate3d: '0px, 0px, 0px'}, 1000, 'linear');
+	});
+	var movingCell=getCellByInfo(cellInfo);
+	var movingCellBalls=movingCell.children('.ball');
+	if(movingCellBalls==undefined || movingCellBalls.length==0){
+		var x=(movingCell.offset().left - ball.offset().left)+2;
+		var y=(movingCell.offset().top - ball.offset().top)+2;
+	}else{
+		cellFinalBall=movingCell.children('.ball').last();
+		var x=(cellFinalBall.offset().left - ball.offset().left);
+		var y=(cellFinalBall.offset().top - ball.offset().top);
+	}
+	
+	
+	
+	
 }
 
 function getCellInfo(self){
@@ -62,8 +98,53 @@ function getCellByInfo(obj){
 	return $('#cell-'+(obj.player)+'-'+obj.cell);
 }
 
+function makeStep(stepCell){
+	var stepCellInfo=getCellInfo(stepCell);
+	historySteps=historySteps+";"+stepCellInfo.cell;
+	$('.ball').css('background-color','green');
+	var cellBalls=stepCell.children('.ball');
+	cellBalls.css('background-color','yellow');
+	handSize=cellBalls.length;
+	var nextCell;
+	var currentCell=getCellInfo(stepCell);
+	var cnt=0;
+	cellBalls.each(function(){
+		cnt++;
+		if(handSize==1)
+			currentCell=getNextCellObj(currentCell);
+		
+		ball=$(this);
+		moveBallToCell(ball,currentCell);
+		
+		
+		if(cnt==handSize){	
+			
+			var finalCell=getCellByInfo(currentCell);
+			var finalCellInfo=getCellInfo(finalCell);
+			var finalCellBalls=finalCell.children('.ball');
+			
+			if(stepCellInfo.player!=finalCellInfo.player){	
+				if (finalCellBalls.length % 2 == 0) {
+					finalCellBalls.fadeOut(1200,function(){	
+						finalCellBalls.remove();
+					});
+				} else if (finalCellBalls.length == 3 && specialCell[stepCellInfo.player] === 0) {					
+					specialCell[stepCellInfo.player]=finalCellInfo.cell;					
+					finalCellBalls.fadeOut(1200,function(){	
+						finalCellBalls.remove();
+					});
+					finalCell.css('background-color','#ff7518');
+				}
+			
+				
+			}
+			
+		}
+		currentCell=getNextCellObj(currentCell);
+	});
+}
+
 function appReady(){
-		console.log('device ready');
 		initBalls();
 		
 		var width=$(window).width();
@@ -81,51 +162,40 @@ function appReady(){
 		balls.width(ballDiameter);
 		balls.css('border-radius',ballDiameter);
 
-		//$('.ball').on('click', function() {
-		//	$(this).appendTo('#cell-1-3');
-		//}); 
+
 		waitingUserStep=true;
 		$('.cell').on('click', function() {
-			//if(!waitingUserStep)	return;
+			if(!waitingUserStep) 
+				return;
 			waitingUserStep=false;
 			var stepCell=$(this);
-			var stepCellInfo=getCellInfo($(this));
 			
-			console.log($(this).attr('cell'));
-			cellBalls=$(this).children('.ball');
-			handSize=cellBalls.length;
-			var nextCell;
-			var currentCell=getCellInfo($(this));
-			var cnt=0;
-			cellBalls.each(function(){
-				cnt++;
-				if(handSize==1)
-					currentCell=getNextCellObj(currentCell);
-				
-				ball=$(this);
-				moveBallToCell(ball,currentCell);
-				
-				
-				if(cnt==handSize){	
-					console.log('finalCell');
-					
-					var finalCell=getCellByInfo(currentCell);
-					var finalCellInfo=getCellInfo(finalCell);
-					console.log(finalCell);
-					var finalCellBalls=finalCell.children('.ball');
-					console.log(finalCellBalls.length);
-					if((finalCellBalls.length %2 == 0) && (stepCellInfo.player!=finalCellInfo.player)){	
-						finalCellBalls.appendTo($('#kazan-'+stepCellInfo.player));
-					}
-					
-				}
-				currentCell=getNextCellObj(currentCell);
-			});
+			makeStep(stepCell);
 			setTimeout(function(){
-			$.blockUI({ message: 'Ждем ход соперника' }); 
- 
-			setTimeout($.unblockUI, 2000); 
-			},300);
+				$.blockUI({ message: 'Ждем ход соперника' }); 
+				
+				$.ajax({
+					type: 'GET',
+					url: 'http://game-ninestones.rhcloud.com/game',
+					// data to be added to query string:
+					data: { history: historySteps },
+					// type of data we are expecting in return:
+					dataType: 'json',
+					timeout: 30000,
+					success: function(data){
+						var cellNumber=data.aiStep.cellNumber;
+						$('#score-data').html(data.gameState.board.score.secondPlayerScore+' - '+data.gameState.board.score.firstPlayerScore);
+						$.unblockUI();
+						makeStep($('#cell-1-'+cellNumber));
+						waitingUserStep=true;
+					},
+					error: function(xhr, type){
+						$.unblockUI();
+						
+					}
+				});
+			
+			},1800);
 		}); 
 		
 }
