@@ -56,11 +56,19 @@ function getNextCellObj(obj){
 }
 
 function moveBallToCell(ball, cellInfo){
-	if(specialCell[cellInfo.player]==cellInfo.cell){
-		ball.fadeOut(1200,function(){	
+	if((parseInt(specialCell[1],10)==parseInt(cellInfo.cell,10))&&(2==parseInt(cellInfo.player,10))){
+		ball.fadeOut(500,function(){	
 			ball.remove();
 		});
+		return;
 	}
+	if((parseInt(specialCell[2],10)==parseInt(cellInfo.cell,10))&&(1==parseInt(cellInfo.player,10))){
+		ball.fadeOut(500,function(){	
+			ball.remove();
+		});
+		return;
+	}
+
 	var oldX=ball.offset().left;
 	var oldY=ball.offset().top;
 	
@@ -74,19 +82,7 @@ function moveBallToCell(ball, cellInfo){
 	ball.animate({ translate3d: x+'px, '+y+'px, 0px'}, 0,'linear',function(){
 		ball.animate({ translate3d: '0px, 0px, 0px'}, 1000, 'linear');
 	});
-	var movingCell=getCellByInfo(cellInfo);
-	var movingCellBalls=movingCell.children('.ball');
-	if(movingCellBalls==undefined || movingCellBalls.length==0){
-		var x=(movingCell.offset().left - ball.offset().left)+2;
-		var y=(movingCell.offset().top - ball.offset().top)+2;
-	}else{
-		cellFinalBall=movingCell.children('.ball').last();
-		var x=(cellFinalBall.offset().left - ball.offset().left);
-		var y=(cellFinalBall.offset().top - ball.offset().top);
-	}
-	
-	
-	
+		
 	
 }
 
@@ -99,6 +95,15 @@ function getCellByInfo(obj){
 }
 
 function makeStep(stepCell){
+	var my_media = new Media('/android_asset/www/sound/click.mp3',
+            // success callback
+             function () { console.log("playAudio():Audio Success"); },
+            // error callback
+             function (err) { console.log("playAudio():Audio Error: " + err); }
+    );
+           // Play audio
+    my_media.play();
+
 	var stepCellInfo=getCellInfo(stepCell);
 	historySteps=historySteps+";"+stepCellInfo.cell;
 	$('.ball').css('background-color','green');
@@ -125,12 +130,12 @@ function makeStep(stepCell){
 			
 			if(stepCellInfo.player!=finalCellInfo.player){	
 				if (finalCellBalls.length % 2 == 0) {
-					finalCellBalls.fadeOut(1200,function(){	
+					finalCellBalls.fadeOut(500,function(){	
 						finalCellBalls.remove();
 					});
 				} else if (finalCellBalls.length == 3 && specialCell[stepCellInfo.player] === 0) {					
 					specialCell[stepCellInfo.player]=finalCellInfo.cell;					
-					finalCellBalls.fadeOut(1200,function(){	
+					finalCellBalls.fadeOut(500,function(){	
 						finalCellBalls.remove();
 					});
 					finalCell.css('background-color','#ff7518');
@@ -146,6 +151,11 @@ function makeStep(stepCell){
 
 function appReady(){
 		initBalls();
+		
+		$('#reload-game').click(function(){
+			$.blockUI({ message: 'Создаем новую игру' }); 
+			location.reload(); 
+		});
 		
 		var width=$(window).width();
 		var height=$(window).height();
@@ -184,7 +194,8 @@ function appReady(){
 					timeout: 30000,
 					success: function(data){
 						var cellNumber=data.aiStep.cellNumber;
-						$('#score-data').html(data.gameState.board.score.secondPlayerScore+' - '+data.gameState.board.score.firstPlayerScore);
+						console.log("aiStep: "+cellNumber);
+						$('#score-data').html(data.gameState.board.score.firstPlayerScore+' - '+data.gameState.board.score.secondPlayerScore);
 						$.unblockUI();
 						makeStep($('#cell-1-'+cellNumber));
 						waitingUserStep=true;
