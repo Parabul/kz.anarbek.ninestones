@@ -48,27 +48,67 @@
 				</tr>
 				<tr>
 					<td id="game-info" colspan="9">
-						<a id="reload-game" class="btn btn-primary btn-lg" style="font-weight:bold;padding:10px;">Новая игра</a>
-					<a class="btn btn-info btn-lg" style="font-weight:bold;padding:10px;">Правила</a>
+						<a id="reload-game" class="reload-game btn btn-primary btn-lg" style="font-weight:bold;padding:10px;">Новая игра</a>
+					
+					<a id="rules-modal-btn" type="button" style="font-weight:bold;padding:10px;" class="btn btn-info btn-lg" data-toggle="modal" data-target="#rulesModal">
+						Правила
+					</a>
 					<div id="kazan-1" class="hide"></div>
 					<div id="kazan-2" class="hide"></div>	
 					<p class="btn btn-success btn-lg pull-right" style="font-weight:bold;padding:10px;">Счет:<span id="score-data">0 - 0</span> </p>
 					</td>
 				</tr>
 				<tr class="player-side">
-					<td class="cell" player="2" cell="1"  id="cell-2-1"></td>
-					<td class="cell" player="2" cell="2"  id="cell-2-2"></td>
-					<td class="cell" player="2" cell="3"  id="cell-2-3"></td>
-					<td class="cell" player="2" cell="4"  id="cell-2-4"></td>
-					<td class="cell" player="2" cell="5"  id="cell-2-5"></td>
-					<td class="cell" player="2" cell="6"  id="cell-2-6"></td>
-					<td class="cell" player="2" cell="7"  id="cell-2-7"></td>
-					<td class="cell" player="2" cell="8"  id="cell-2-8"></td>
-					<td class="cell" player="2" cell="9"  id="cell-2-9"></td>
+					<td class="cell players-cell" player="2" cell="1"  id="cell-2-1"></td>
+					<td class="cell players-cell" player="2" cell="2"  id="cell-2-2"></td>
+					<td class="cell players-cell" player="2" cell="3"  id="cell-2-3"></td>
+					<td class="cell players-cell" player="2" cell="4"  id="cell-2-4"></td>
+					<td class="cell players-cell" player="2" cell="5"  id="cell-2-5"></td>
+					<td class="cell players-cell" player="2" cell="6"  id="cell-2-6"></td>
+					<td class="cell players-cell" player="2" cell="7"  id="cell-2-7"></td>
+					<td class="cell players-cell" player="2" cell="8"  id="cell-2-8"></td>
+					<td class="cell players-cell" player="2" cell="9"  id="cell-2-9"></td>
 				</tr>
 			</table>
-			
-			
+			<div style="height:0px;">
+				<div id="resultModal" class="modal">
+				  <div class="modal-dialog">
+					<div class="modal-content">				 
+					  <div class="modal-body">
+						<h4 id="modal-message" class="text-center"></h4>
+						<a class="btn btn-info btn-lg center-block reload-game" style="font-weight:bold;padding:10px;">Начать новую игру</a>
+					  </div>
+					  
+					 
+					</div><!-- /.modal-content -->
+				  </div><!-- /.modal-dialog -->
+				</div><!-- /.modal -->
+
+				<div id="rulesModal" class="modal ">
+				  <div class="modal-dialog">
+					<div class="modal-content">				 
+					  <div class="modal-body" id="rulesText" style="overflow-y:auto;font-size:16px;">
+						<h3>Правила игры</h3>
+						<hr/>
+						<p>Играют двое, у каждого на доске по девять игровых и одной накопительной лунке. </p>
+						<p>Лунки-дома могут быть пронумерованы слева направо от 1 до 9. </p>
+						<p>Цель игры: перекладывая камешки в игровых лунках, выиграть их как можно больше собирая в свою казну.</p>
+						<p>В начале игры все камешки лежат в восемнадцати домах, по девять штук в каждом, казна каждого игрока при этом пуста.</p>
+						<p>Игроки делают ходы поочерёдно.</p>
+						<p>Делая ход, игрок берёт все камешки из любой непустой лунки-дом на своей половине,
+						и начиная с этой же лунки раскладывает их по одному в свои и чужие дома против часовой стрелки 
+						(если в исходном доме только один камешек, то он перекладывается в следующий). </p>
+						<p>Если последний камешек попадёт в дом соперника и количество камешков в нём станет чётным, 
+						то камешки из этого дома переходят в казну игроку, совершившему ход. После этого ход переходит к его сопернику. </p>
+						<p>Игра ведётся до тех пор, пока один из двух игроков не наберёт в свою казну больше 81 камешка (этот игрок побеждает, ему начисляется одно очко), либо они оба набирают по 81 камешку (ничья, каждому игроку по пол-очка).</p>
+						<a id="close-rules" class="btn btn-info btn-lg " style="font-weight:bold;padding:10px;">Закрыть</a>
+					  </div>
+					  
+					 
+					</div><!-- /.modal-content -->
+				  </div><!-- /.modal-dialog -->
+				</div><!-- /.modal -->						
+			</div>
         </div>
         <script type="text/javascript" src="cordova.js"></script>
 		<script type="text/javascript" src="js/zepto.js"></script>        

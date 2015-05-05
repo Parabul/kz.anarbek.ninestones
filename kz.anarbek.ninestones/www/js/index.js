@@ -95,13 +95,8 @@ function getCellByInfo(obj){
 }
 
 function makeStep(stepCell){
-	var my_media = new Media('/android_asset/www/sound/click.mp3',
-            // success callback
-             function () { console.log("playAudio():Audio Success"); },
-            // error callback
-             function (err) { console.log("playAudio():Audio Error: " + err); }
-    );
-           // Play audio
+	
+	// Play audio
     my_media.play();
 
 	var stepCellInfo=getCellInfo(stepCell);
@@ -149,16 +144,43 @@ function makeStep(stepCell){
 	});
 }
 
+function toggleCon(e) {
+	if(e.type == "offline") {
+		$.blockUI({ message: 'Нет доступа к сети! Для полноценной игры необходимо подключение к сети Интернет' }); 
+	} else {
+		$.unblockUI();
+	}
+}
+
 function appReady(){
+
+		document.addEventListener("online", toggleCon, false);
+		document.addEventListener("offline", toggleCon, false);
+	 
+		if(navigator.network.connection.type == Connection.NONE) {
+			$.blockUI({ message: 'Нет доступа к сети! Для полноценной игры необходимо подключение к сети Интернет' }); 
+		} else {
+			$.unblockUI();
+		}
+
 		initBalls();
-		
-		$('#reload-game').click(function(){
+		var my_media = new Media('/android_asset/www/sound/click.mp3',
+            // success callback
+             function () { console.log("playAudio():Audio Success"); },
+            // error callback
+             function (err) { console.log("playAudio():Audio Error: " + err); }
+		);
+		$('.reload-game').click(function(){
 			$.blockUI({ message: 'Создаем новую игру' }); 
 			location.reload(); 
 		});
 		
+		
+		
 		var width=$(window).width();
 		var height=$(window).height();
+
+		$('#rulesText').height(height*0.8);
 		
 		$('#game-info').height(height/6);	
 		$('.player-side').height(5*height/12-4);
@@ -174,7 +196,13 @@ function appReady(){
 
 
 		waitingUserStep=true;
-		$('.cell').on('click', function() {
+		$('#rules-modal-btn').on('click', function() {
+			$('#rulesModal').addClass('show');
+		});
+		$('#close-rules').on('click', function() {
+			$('#rulesModal').removeClass('show');
+		});
+		$('.players-cell').on('click', function() {
 			if(!waitingUserStep) 
 				return;
 			waitingUserStep=false;
@@ -195,6 +223,13 @@ function appReady(){
 					success: function(data){
 						var cellNumber=data.aiStep.cellNumber;
 						console.log("aiStep: "+cellNumber);
+						if(data.gameState.board.score.gameOver==true){
+							var msg=data.gameState.board.score.winner=="SECOND"?"Противник одержал победу":"Поздравляем! Вы победили";
+						
+							$('#modal-message').html(msg);
+							$('#resultModal').addClass("show");
+							
+						}
 						$('#score-data').html(data.gameState.board.score.firstPlayerScore+' - '+data.gameState.board.score.secondPlayerScore);
 						$.unblockUI();
 						makeStep($('#cell-1-'+cellNumber));
