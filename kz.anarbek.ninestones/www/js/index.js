@@ -25,6 +25,7 @@ var specialCell={
 	2:0
 }
 var historySteps="";
+var my_media;
 function initBalls(){
 	var cnt=1;
 	for(var player=1;player<3;player++){	
@@ -97,7 +98,13 @@ function getCellByInfo(obj){
 function makeStep(stepCell){
 	
 	// Play audio
-    my_media.play();
+ 		try{
+			 my_media.play();
+
+		
+		}catch(err) {
+			alert(err.message);
+		}  
 
 	var stepCellInfo=getCellInfo(stepCell);
 	historySteps=historySteps+";"+stepCellInfo.cell;
@@ -153,23 +160,32 @@ function toggleCon(e) {
 }
 
 function appReady(){
-
-		document.addEventListener("online", toggleCon, false);
-		document.addEventListener("offline", toggleCon, false);
-	 
-		if(navigator.network.connection.type == Connection.NONE) {
-			$.blockUI({ message: 'Нет доступа к сети! Для полноценной игры необходимо подключение к сети Интернет' }); 
-		} else {
-			$.unblockUI();
+		try{
+			document.addEventListener("online", toggleCon, false);
+			document.addEventListener("offline", toggleCon, false);
+			
+			if(navigator.network.connection.type == Connection.NONE) {
+				$.blockUI({ message: 'Нет доступа к сети! Для полноценной игры необходимо подключение к сети Интернет' }); 
+			} else {
+				$.unblockUI();
+			}
+		}catch(err) {
+			alert(err.message);
 		}
 
 		initBalls();
-		var my_media = new Media('/android_asset/www/sound/click.mp3',
-            // success callback
-             function () { console.log("playAudio():Audio Success"); },
-            // error callback
-             function (err) { console.log("playAudio():Audio Error: " + err); }
-		);
+		try{
+			my_media = new Media('/android_asset/www/sound/click.mp3',
+				// success callback
+				 function () { console.log("playAudio():Audio Success"); },
+				// error callback
+				 function (err) { console.log("playAudio():Audio Error: " + err); }
+			);
+
+		
+		}catch(err) {
+			alert(err.message);
+		}
 		$('.reload-game').click(function(){
 			$.blockUI({ message: 'Создаем новую игру' }); 
 			location.reload(); 
